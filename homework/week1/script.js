@@ -9,6 +9,7 @@ $(document).ready(function() {
     function api () {
 
       $.get("http://www.reddit.com/hot.json", function(response) {
+      $("#list").empty();
       var stories = response.data.children;
       for(var i in stories) {
         story = stories[i].data;
