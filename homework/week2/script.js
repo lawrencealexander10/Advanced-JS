@@ -4,16 +4,20 @@ $(document).ready(function() {
   $("#refresh").click(function() {
     // Ex. 1: Refresh Refresher code here
     // Hint: it's one line. 
-    // ...
+    // $("#list").empty();
+    loadReddit();
   });
 
   $(window).mousemove(function(e) {
     // Ex. 3: My Shadow code here
-
+    mouseX = e.pageX + 20;
+    mouseY = e.pageY + 20;
     // You can change the css of an element with the .css function—
     //   look up the documentation for it on jQuery.com!
-    // $("#follow-dot").css({ ... });
-    // console.log(e.pageX, e.pageY); // Just to see what's going on. 
+    setTimeout(function(){
+    $("#follow-dot").css({ 'top': mouseY,'left':mouseX});
+  }, 700);
+    //console.log(e.pageX, e.pageY); // Just to see what's going on. 
     // Optionally, add a delay. Hint: look up the setTimeout function!
   });
 
@@ -22,27 +26,29 @@ $(document).ready(function() {
 
 // Ex. 2: Objectify Me code here
 // An example person
-// var rafi = {
-//   fname: ...
-//   lname: ...
-//   favoriteCereal: ...
-//   interests: ... 
-//   fullname: function() {
-//     // Make sure to use `this`
-//     // return ...
-//   },
-//   miniBio: function() {
-//     toPrint = "Hi my name is " + ...
-//     // "toPrint += X" is a shortcut for "toPrint = toPrint + X"
-//     toPrint += " and my favorite cereal is " + ...
-//     toPrint += "In my free time, I like to ";
-//     for (var i in this.interests) {
-//       toPrint += ...
-//     }
-//     console.log(toPrint);
-//     return toPrint;
-//   }
-// }
+var alex = {
+  fname: "alex",
+  lname: "tenn",
+  favoriteCereal: "Kashi",
+  interests: ["code", "watch television", "and sleep"],
+  fullname: function() {
+    // Make sure to use `this`
+    return this.fname + " " + this.lname;
+  },
+  miniBio: function() {
+    toPrint = "Hi my name is " + this.fullname();
+    // "toPrint += X" is a shortcut for "toPrint = toPrint + X"
+    toPrint += " and my favorite cereal is " + this.favoriteCereal;
+    toPrint += ". In my free time, I like to";
+    for (var i in this.interests) {
+      toPrint += " " + this.interests[i] ;
+      if (i < this.interests.length - 1){
+        toPrint += "," }
+    }
+    console.log(toPrint);
+    return toPrint;
+  }
+}
 
 // Gets data from Reddit
 var loadReddit = function() {
@@ -71,15 +77,22 @@ var getFB = function() {
     method: "get", // Using GET
     url: "https://graph.facebook.com/me", // Get my own info
     data: {
-      fields: "...", // What goes here? 
+      fields: "id,name,picture", // What goes here? 
       // Access token obtained at https://developers.facebook.com/tools/explorer
       // Note that it expires after a while, so you occasionally need to go back
       //   and get another one. 
-      access_token: "CAACEdEose0cBAK0ILXnxSN8TSvCqvKtFroh7vzMzB7tZBL00z9hneo0g1AusC1NkUtVnBo8pW51GdKn26YoNFqtLeuBc849SusuUzxZCxyDvB2gjFI2iZCmpeYngbvajE610H7R8buek4ZBBLynQ2ARPiHndjQrfLCBnhyqZAAtuJp7L0ubaijFkgyg7p1GH9h8UA68Kj1ZBXVaCQ1p0xC"
+      access_token: "CAACEdEose0cBAMZCSuyTQtsbQmKsdOxp4VXoV3ZBulgH3AM99Gz3ExJs9Qi3XrBYPwqffzdM2mhZCoG1ZBnaKrRZBsFwgXZAH2xeeXXLxIVSmBr4G5GodtKx44ZB9lTpKSjDj30zO1AtFEINoD9MF2LPwLYg4GrwEo7wCe4XDQ3lamVJi3AdHLovEMoU7ihqBU0byLZBY1CDjZCdzbdeGtHZBH"
     },
     success: function(response) {
+      re = response
       console.log(response);
       // Write code to display the name and userID on the page here.
+      var fb = $("<h3></h3>");
+      $(fb).append(response.name + " : " + response.id);
+      var img = $("<img>");
+      img.attr('src', response.picture.data.url);
+      $(img).appendTo(fb);
+      $("#fb").append(fb);
       // If you got the profile picture, make it show up in an <img> tag
     }, 
     error: function(jxqr, text) {
